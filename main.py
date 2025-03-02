@@ -30,6 +30,7 @@ def generate_fake_data(n):
 st.write("📌 **Generating dataset...**")
 start_time = time.time()
 df_pandas = generate_fake_data(num_rows)
+df_pandas["first_letter"] = df_pandas["name"].str[0]
 st.success(f"✅ Dataset with {num_rows:,} rows generated in {time.time() - start_time:.2f} sec!")
 
 # Convert dataset to Dask and Polars
@@ -41,17 +42,11 @@ def compute_average_salary(df, lib):
     start_time = time.time()
     
     if lib == "pandas":
-        df["first_letter"] = df["name"].str[0]
-        result = df.groupby("first_letter")["salary"].mean().reset_index()
+        result = df.groupby("first_letter")["age"].count().reset_index()
     elif lib == "dask":
-        df["first_letter"] = df["name"].str[0]
-        result = df.groupby("first_letter")["salary"].mean().compute().reset_index()
+        result = df.groupby("first_letter")["age"].count().compute().reset_index()
     elif lib == "polars":
-        df = df.with_columns([
-            pl.col("name").str.slice(0, 1).alias("first_letter"),
-            pl.col("salary").cast(pl.Float32)  # Force consistent precision
-        ])
-        result = df.group_by("first_letter").agg(pl.col("salary").mean()).to_pandas()
+        result = df.group_by("first_letter").agg(pl.col('age').count()).sort('first_letter')
     elapsed_time = time.time() - start_time
     return result, elapsed_time
 
