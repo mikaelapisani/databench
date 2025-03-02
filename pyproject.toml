@@ -1,0 +1,14 @@
+[project]
+name = "meetup"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "dask>=2023.5.0",
+    "faker>=35.2.2",
+    "pandas>=2.0.3",
+    "polars>=1.8.2",
+    "pyspark>=3.5.5",
+    "streamlit>=1.40.1",
+]
